@@ -1,0 +1,524 @@
+CREATE OR REPLACE PACKAGE INSIS_BLC_GLOBAL_CUST.srv_cust_pay_bo
+IS
+
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.PreValidatePmnt
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   07.05.2017  creation
+--
+-- Purpose: Execute custom procedure of payment validation
+--
+-- Input parameters:
+--     pi_Context    SrvContext   Specifies value data as attributes in context;
+--      - PAYMENT_ID          NUMBER    Payment Id;
+--      - ACTION_NOTES        VARCHAR2  Action notes;
+--      - PROCEDURE_RESULT    VARCHAR2  Procedure result;
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--      - ACTION_NOTES        VARCHAR2  Action notes;
+--      - PROCEDURE_RESULT    VARCHAR2  Procedure result;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--      - ACTION_NOTES        VARCHAR2  Action notes;
+--      - PROCEDURE_RESULT    VARCHAR2  Procedure result;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'VALIDATE_BLC_PMNT'
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE PreValidatePmnt( pi_Context     IN     SrvContext,
+                           pio_OutContext IN OUT SrvContext,
+                           pio_Err        IN OUT SrvErr );
+                           
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.PreApplyReceipt
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   07.05.2017  creation
+--
+-- Purpose: Execute procedure of custom validation of apply receipt
+--
+-- Input parameters:
+--     pi_Context    SrvContext   Specifies value data as attributes in context;
+--      - PAYMENT_ID          NUMBER     Payment Id;
+--      - REMITTANCE_IDS      VARCHAR2   List of remittance ids;
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--      - DOC_ID              NUMBER     Document Id;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--      - DOC_ID              NUMBER     Document Id;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'APPLY_BLC_RECEIPT',
+-- 'APPLY_BLC_REMITTANCES'
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE PreApplyReceipt( pi_Context     IN     SrvContext,
+                           pio_OutContext IN OUT SrvContext,
+                           pio_Err        IN OUT SrvErr );
+                           
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.ApplyReceipt
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   07.05.2017  creation
+--
+-- Purpose: Execute procedure of custom validation of apply receipt
+--
+-- Input parameters:
+--     pi_Context    SrvContext   Specifies value data as attributes in context;
+--      - PAYMENT_ID          NUMBER     Payment Id;
+--      - REMITTANCE_IDS      VARCHAR2   List of remittance ids;
+--      - DOC_ID              NUMBER     Document Id;
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'APPLY_BLC_RECEIPT',
+-- 'APPLY_BLC_REMITTANCES'
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE ApplyReceipt( pi_Context     IN     SrvContext,
+                        pio_OutContext IN OUT SrvContext,
+                        pio_Err        IN OUT SrvErr );
+                        
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.PreReversePayment
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   21.07.2017  creation
+--
+-- Purpose: Service executes custom validation of reverse reason
+--
+-- Input parameters:
+--     pi_Context      SrvContext    Specifies payment data as attributes in
+--                                   context;
+--        - PAYMENT_ID  - payment Id (required);
+--        - REASON_ID   - reverse reason Id (lookup_id);
+--        - REASON_CODE - reverse reason code (lookup_code);
+--        - NOTES       - reverse reason notes;
+--        - REVERSED_ON - reverse date
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--        - NEW_STATUS - change to new status instead of reverse
+--        - PROCEDURE_RESULT  VARCHAR2   Procedure result
+--                                       'OK' - when activity is processed
+--                                       'Err' - when some error occurs
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--        - NEW_STATUS - change to new status instead of reverse
+--        - PROCEDURE_RESULT  VARCHAR2   Procedure result
+--                                       'OK' - when activity is processed
+--                                       'Err' - when some error occurs
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'REVERSE_BLC_PMNT'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE PreReversePayment ( pi_Context IN SrvContext,
+                              pio_OutContext IN OUT SrvContext,
+                              pio_Err      IN OUT SrvErr );                        
+
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.ReversePayment
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   21.07.2017  creation
+--
+-- Purpose: Service override core reverse payment
+--
+-- Input parameters:
+--     pi_Context      SrvContext    Specifies payment data as attributes in
+--                                   context;
+--        - PAYMENT_ID  - payment Id (required);
+--        - REASON_ID   - reverse reason Id (lookup_id);
+--        - REASON_CODE - reverse reason code (lookup_code);
+--        - NOTES       - reverse reason notes;
+--        - REVERSED_ON - reverse date
+--        - EXECUTE_UNCLEAR - Y/N, Y - means execute unclear before reverse in
+--                                  case that payment is cleared yet
+--        - NEW_STATUS - change to new status instead of reverse
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--         - PROCEDURE_RESULT  VARCHAR2   Procedure result
+--                                       'OK' - when activity is processed
+--                                       'Err' - when some error occurs
+--         - RETURN_STATUS     VARCHAR2   New payment status after activity
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--         - PROCEDURE_RESULT  VARCHAR2   Procedure result
+--                                       'OK' - when activity is processed
+--                                       'Err' - when some error occurs
+--         - RETURN_STATUS     VARCHAR2   New payment status after activity
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'REVERSE_BLC_PMNT'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE ReversePayment ( pi_Context IN SrvContext,
+                           pio_OutContext IN OUT SrvContext,
+                           pio_Err      IN OUT SrvErr ); 
+                           
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.ApprovePayments
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   24.07.2017  creation
+--
+-- Purpose: Service executes steps of process BLC_APPROVE_PAYMENT for list of 
+-- payments
+--
+-- Input parameters:
+--     pi_Context      SrvContext    Specifies payment data as attributes in
+--                                   context;
+--        - PAYMENT_IDS      VARCHAR2   List of payment identifiers separated
+--                                      with comma (required);
+--        - NOTES            VARCHAR2   Approval notes;
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--       - PROCEDURE_RESULT  VARCHAR2   Procedure result
+--                                       'OK' - when activity is processed
+--                                       'Err' - when some error occurs
+--       - RETURN_STATUS     VARCHAR2   New payment status after activity
+--                                      empty in case that some error occurs
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--       - PROCEDURE_RESULT  VARCHAR2   Procedure result
+--                                       'OK' - when activity is processed
+--                                       'Err' - when some error occurs
+--       - RETURN_STATUS     VARCHAR2   New payment status after activity
+--                                      empty in case that some error occurs
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'APPROVE_BLC_PMNTS'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE ApprovePayments ( pi_Context IN SrvContext,
+                            pio_OutContext IN OUT SrvContext,
+                            pio_Err      IN OUT SrvErr ); 
+                            
+--------------------------------------------------------------------------------
+-- Name: srv_blc_bo.ModifyPmntActivities
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   24.07.2017  creation
+--
+-- Purpose: Service modify allowed activities for given payment
+--
+-- Input parameters:
+--     pi_Context      SrvContext    Specifies payment data as attributes in
+--                                   context;
+--        - PAYMENT_ID    NUMBER   Payment Id (required);
+--        - ACT_STRING   VARCHAR2  Activities string including some of the next
+--                                 characters:
+--                                  V - Validate
+--                                  H - On-Hold
+--                                  A - Approve
+--                                  C - Clear
+--                                  R - Reverse
+--                                  D - Delete
+--                                  N - Reinstate
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--        - ACT_STRING   VARCHAR2  Activities string including some of the next
+--                                 characters:
+--                                  V - Validate
+--                                  H - On-Hold
+--                                  A - Approve
+--                                  C - Clear
+--                                  R - Reverse
+--                                  D - Delete
+--                                  N - Reinstate
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--        - ACT_STRING   VARCHAR2  Activities string including some of the next
+--                                 characters:
+--                                  V - Validate
+--                                  H - On-Hold
+--                                  A - Approve
+--                                  C - Clear
+--                                  R - Reverse
+--                                  D - Delete
+--                                  N - Reinstate
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'GET_BLC_PMNT_ACTIVITIES'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE ModifyPmntActivities ( pi_Context IN SrvContext,
+                                 pio_OutContext IN OUT SrvContext,
+                                 pio_Err      IN OUT SrvErr ); 
+                                 
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.UpdateApplEvent
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   07.05.2017  creation
+--
+-- Purpose: Execute procedure for set payment event id in attrib_9 of payment
+-- application
+--
+-- Input parameters:
+--     pi_Context    SrvContext   Specifies value data as attributes in context;
+--      - APPLICATION_ID      NUMBER     Application Id;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'BLC_ITEM_PAID_STATUS'
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE UpdateApplEvent( pi_Context     IN     SrvContext,
+                           pio_OutContext IN OUT SrvContext,
+                           pio_Err        IN OUT SrvErr ); 
+                           
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.VoidPaymentForDocument
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   27.09.2013  creation
+--     Fadata   05.03.2015  changed - change meaning of parameter reason
+--                                    to be reverse payment reason code
+--                                    rq 1000009677
+--
+-- Purpose:  Service reverses outgoing payments with amount > 0 for given
+-- document
+--
+-- Input parameters:
+--     pi_Context      SrvContext   Specifies payment data as attributes
+--                                  in context;
+--        - DOC_ID - document Id (required);
+--        - REASON - reverse payment reason code;
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--        - PROCEDURE_RESULT - Procedure result
+--                             'OK' - when payment is voided
+--                             'Err' - when some error occurs
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--        - PROCEDURE_RESULT - Procedure result
+--                             'OK' - when payment is voided
+--                             'Err' - when some error occurs
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions:
+--    1) In case that reversal of payment failed
+--
+-- Dependences: Service can be associated with event 'VOID_BLC_PMNT_FOR_DOCUMENT'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE VoidPaymentForDocument ( pi_Context IN SrvContext,
+                                   pio_OutContext IN OUT SrvContext,
+                                   pio_Err IN OUT SrvErr );  
+                                   
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pay_bo.CreateCORIInstEvents
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   06.01.2014  creation
+--
+-- Purpose:  Create accounting event for claim RI/CO installments related to 
+-- clearing of given payment
+--
+-- Input parameters:
+--     pi_Context      SrvContext   Specifies clearing data as attributes in
+--                                  context;
+--         - PAYMENT_ID - unique identifier of payment (required);
+--     pio_OutContext  SrvContext   Collection of object's attributes;
+--     pio_Err         SrvErr       Specifies structure for passing back the
+--                                  error code, error TYPE and corresponding
+--                                  message.
+--
+-- Output parameters:
+--     pio_OutContext  SrvContext   Collection of object's attributes;
+--     pio_Err         SrvErr       Specifies structure for passing back the
+--                                  error code, error TYPE and corresponding
+--                                  message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions:
+--
+-- Dependences: Service is associated with event 'CREATE_BLC_CLEARING'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE CreateCORIInstEvents ( pi_Context IN SrvContext,
+                                 pio_OutContext IN OUT SrvContext,
+                                 pio_Err IN OUT SrvErr );                                   
+--
+END srv_cust_pay_bo;
+/
+
+

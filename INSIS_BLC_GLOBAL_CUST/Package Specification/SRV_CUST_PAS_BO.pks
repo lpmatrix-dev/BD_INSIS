@@ -1,0 +1,310 @@
+CREATE OR REPLACE PACKAGE INSIS_BLC_GLOBAL_CUST.SRV_CUST_PAS_BO IS
+
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pas_bo.PreProcessItem
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata  16.08.2018  creation
+--
+-- Purpose: Populate item attrubutes before process item parameters passed
+-- during policy payment plan transfer
+--
+-- Input parameters:
+--     pi_Context      SrvContext   Specifies value data as attributes
+--                                  in context(if needed)
+--
+-- Output parameters:
+--     pio_OutContext  SrvContext   Specifies structure for
+--                                  passing back the parameters(if needed);
+--     pio_Err          SrvErr      Specifies structure for passing back the
+--                                  error code, error TYPE and corresponding
+--                                  message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'TRANSFER_GROUP_INSTALLMENTS'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE PreProcessItem( pi_Context     IN     SrvContext,
+                          pio_OutContext IN OUT SrvContext,
+                          pio_Err        IN OUT srvErr);
+
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pas_bo.PreProcessInstallments
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata  16.08.2018  creation
+--
+-- Purpose: Populate installments attributes before process installments
+-- collection passed during policy payment plan transfer
+--
+-- Input parameters:
+--     pi_Context      SrvContext   Specifies value data as attributes
+--                                  in context(if needed)
+--
+-- Output parameters:
+--     pio_OutContext  SrvContext   Specifies structure for
+--                                  passing back the parameters(if needed);
+--     pio_Err          SrvErr      Specifies structure for passing back the
+--                                  error code, error TYPE and corresponding
+--                                  message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'TRANSFER_GROUP_INSTALLMENTS'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE PreProcessInstallments( pi_Context     IN     SrvContext,
+                                  pio_OutContext IN OUT SrvContext,
+                                  pio_Err        IN OUT srvErr);
+
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pas_bo.CompensateInstallments
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata  05.04.2017  creation - RQ1000010702
+--
+-- Purpose: Process installments' compensations by given item
+-- Input parameters:
+--     pi_Context      SrvContext   Specifies value data as attributes in context(if needed)
+--
+-- Output parameters:
+--     pio_OutContext  SrvContext   Specifies structure for
+--                                  passing back the parameters(if needed);
+--     pio_Err          SrvErr      Specifies structure for passing back the
+--                                  error code, error TYPE and corresponding
+--                                  message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'TRANSFER_GROUP_INSTALLMENTS'.
+--
+-- Note: N/A
+-------------------------------------------------------------------------------
+PROCEDURE CompensateInstallments( pi_Context     IN     SrvContext,
+                                  pio_OutContext IN OUT SrvContext,
+                                  pio_Err        IN OUT srvErr);
+
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pas_bo.AutoApproveDocument
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata   07.04.2015  creation - rq 1000009721
+--
+-- Purpose:  Service executes procedure auto approve document for given doc_id
+-- depend on rule result as step of compelete document event. Document status
+-- have to be Validated
+--
+-- Input parameters:
+--     pi_Context      SrvContext   Specifies value data as attributes in
+--                                  context;
+--      - DOC_ID             NUMBER    Document Id;
+--      - ACTION_NOTES       VARCHAR2  Action notes;
+--      - DOC_CLASS          VARCHAR2  Document class;
+--      - DOC_TYPE           VARCHAR2  Document stype;
+--      - TRX_TYPE           VARCHAR2  Transaction type;
+--      - DOC_POSTPROCESS    VARCHAR2  Installment postprocess;
+--      - DOC_RUN_ID         NUMBER    Billing run id;
+--      - NORM_INTERPRET     VARCHAR2  Norm interpretation setting;
+--      - PROCEDURE_RESULT   VARCHAR2  Procedure result;
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--      - PROCEDURE_RESULT   VARCHAR2  Procedure result;
+--      - DOC_STATUS         VARCHAR2  Document status;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Output parameters:
+--     pio_OutContext   SrvContext   Collection of object's attributes;
+--      - PROCEDURE_RESULT   VARCHAR2  Procedure result;
+--      - DOC_STATUS         VARCHAR2  Document status;
+--     pio_Err          SrvErr       Specifies structure for passing back the
+--                                   error code, error TYPE and corresponding
+--                                   message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions: N/A
+--
+-- Dependences: Service is associated with event 'COMPLETE_BLC_DOCUMENT'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE AutoApproveDocument ( pi_Context IN SrvContext,
+                                pio_OutContext IN OUT SrvContext,
+                                pio_Err IN OUT SrvErr );
+
+--------------------------------------------------------------------------------
+-- Name: srv_cust_pas_bo.CreateInstallment
+--
+-- Type: PROCEDURE
+--
+-- Subtype: DATA_PROCESSING
+--
+-- Status: ACTIVE
+--
+-- Versioning:
+--     Fadata  12.01.2020 - copy from core and add check to not create
+--                          installment with zero amount
+--                          LPV-2514
+--
+-- Purpose:  Service generates a record for an installment in Billing module
+-- (inserts a row into BLC_INSTALLMENTS table based on data in attributes of input
+-- parameter pi_Context)
+--
+-- Input parameters:
+--     pi_Context      SrvContext   Specifies installment data as attributes in
+--                                  context;
+--                                  - ITEM_ID - unique identifier of billing item
+--                                    (required)
+--                                  - ACCOUNT_ID - unique identifier of account
+--                                    (required)
+--                                  - DATE - installment date (due date)
+--                                     (required)
+--                                  - CURRENCY - installment currency
+--                                    chosen from predefined nomenclature
+--                                     (required)
+--                                  - AMOUNT - installment amount
+--                                     (required)
+--                                  - ANNIVERSARY - consequtive year number of
+--                                    the agreement lifecycle
+--                                  - POSTPROCESS - postprocess speciality
+--                                    'NORM' - normal
+--                                    'FREE' - full amount has to be written-off
+--                                    immediatelly after transaction is created
+--                                  - REC_RATE_DATE - date of the revenue/expense
+--                                    defaulted with DATE if empty
+--                                  - POLICY_OFFICE - office Id when the policy
+--                                    is issued
+--                                    defaulted with ACTIVITY_OFFICE if empty
+--                                  - ACTIVITY_OFFICE - office Id when the
+--                                    activity is done (required)
+--                                  - INSURANCE_TYPE - insurance type
+--                                  - POLICY - policy Id
+--                                  - ANNEX - annex Id
+--                                  - LOB - line of business
+--                                  - FRACTION_TYPE - fraction type
+--                                  - AGENT - agent Id
+--                                  - CLAIM - claim_Id
+--                                  - CLAIM_REQUEST - claim request Id
+--                                  - TREATY - treaty Id
+--                                  - ADJUSTMENT - adjustment Id
+--                                  - TYPE - installment type
+--                                    chosen from predefined nomenclature
+--                                    (required)
+--                                  - COMMAND - procedure for installment
+--                                    distribution
+--                                    'STD' -  non distributed
+--                                    'UNPAID' - should be distributed between
+--                                     non paid installments
+--                                    'ONTIME' - should be distributed by time
+--                                    'UNIFORM' - should be distributed on
+--                                     pieces specified in parameter pieces
+--                                     between isnatllment date and end date
+--                                     specified in parameter end date
+--                                  - PIECES - count of installments for
+--                                    'UNIFORM' ditribution
+--                                  - END_DATE - end date for distribution
+--                                    procedure
+--                                  - RUN_ID  - mark installment with already
+--                                    created incomplete billing_run
+--                                  - ATTRIB_0 - additional information
+--                                  - ATTRIB_1 - additional information
+--                                  - ATTRIB_2 - additional information
+--                                  - ATTRIB_3 - additional information
+--                                  - ATTRIB_4 - additional information
+--                                  - ATTRIB_5 - additional information
+--                                  - ATTRIB_6 - additional information
+--                                  - ATTRIB_7 - additional information
+--                                  - ATTRIB_8 - additional information
+--                                  - ATTRIB_9 - additional information
+--                                  - EXTERNAL_ID - insurance system reference
+--                                  - BATCH - claims batch
+--                                  - SPLIT_FLAG - split flag Y/N
+--                                  - NOTES - notes
+--                                  - SEQUENCE_ORDER - sequence order
+--                                    allowed values are, default is 'S'
+--                                    'F' - First
+--                                    'I' - Intermediate
+--                                    'L' - Last
+--                                    'S' - Single
+--     pio_OutContext  SrvContext   Collection of object's attributes;
+--     pio_Err         SrvErr       Specifies structure for passing back the
+--                                  error code, error TYPE and corresponding
+--                                  message.
+--
+-- Output parameters:
+--     pio_OutContext  SrvContext   Collection of object's attributes;
+--     pio_Err         SrvErr       Specifies structure for passing back the
+--                                  error code, error TYPE and corresponding
+--                                  message.
+--
+-- Returns:
+-- Not applicable.
+--
+-- Usage: N/A
+--
+-- Exceptions:
+--    1) In case that required attributes for creation of an installment are
+--    not set as attributes of input parameter pi_Context or have values NULL
+--    2) In case that installment type (TYPE) is not found as value from
+--    predefined nomenclature (lookup set INSTALLMENT_TYPES)
+--    3) In case that currency (CURRENCY) is not found as value from
+--    predefined nomenclature (lookup set CURRENCIES)
+--
+-- Dependences: Service is associated with event 'CREATE_BLC_INSTALLMENT'.
+--
+-- Note: N/A
+--------------------------------------------------------------------------------
+PROCEDURE CreateInstallment ( pi_Context IN SrvContext,
+                              pio_OutContext IN OUT SrvContext,
+                              pio_Err IN OUT SrvErr );
+--
+END srv_cust_pas_bo;
+/
+
+
